@@ -14,7 +14,6 @@
 */
 
 
-
 -- 品牌维度表，包含父子品牌
 SELECT *
 FROM dim_brand_child_relation_dt AS t1
@@ -210,6 +209,15 @@ FROM dm_custom_basic_info_dt AS t1
 WHERE t1.p_day = '20180327'
 LIMIT 10
 ;
+
+
+-- 关联销售spu表 dm_spu_order_join_sale_dm
+SELECT t1.*
+FROM dm_spu_order_join_sale_dm AS t1
+WHERE t1.p_day = '20180327'
+LIMIT 10
+;
+
 
 
 
