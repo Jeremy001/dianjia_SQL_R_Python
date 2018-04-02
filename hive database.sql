@@ -186,10 +186,10 @@ LIMIT 10;
 
 
 -- 销售日报数据 dm_storage_day_report
+-- 存放在阿里数加
 SELECT t1.*
 FROM dm_storage_day_report AS t1
 WHERE t1.p_day = '20180327'
-  AND t1.total_sale_money >= 1
 LIMIT 20
 ;
 -- 每天成交金额
@@ -201,6 +201,23 @@ GROUP BY t1.p_day
 ORDER BY t1.p_day
 LIMIT 100
 ;
+-- 每天缺货率
+SELECT t1.brand_id
+        ,t1.brand_name
+        ,t1.p_day
+        ,SUM(t1.total_sale_count_kpi) AS total_sale_count_kpi
+        ,SUM(t1.short_sale_count_kpi) AS short_sale_count_kpi
+        ,SUM(t1.short_sale_count_kpi)/SUM(t1.total_sale_count_kpi) AS short_sale_count_rate_kpi
+FROM dm_storage_day_report AS t1
+WHERE t1.p_day >= '20180101'
+  AND t1.brand_id = '10091'
+GROUP BY t1.brand_id
+        ,t1.brand_name
+        ,t1.p_day
+ORDER BY t1.p_day
+LIMIT 100
+;
+
 
 
 -- 客户基本信息表 dm_custom_basic_info_dt
@@ -212,11 +229,16 @@ LIMIT 10
 
 
 -- 关联销售spu表 dm_spu_order_join_sale_dm
+-- 一个spu在同一个订单中，跟其他哪些spu关联购买
 SELECT t1.*
 FROM dm_spu_order_join_sale_dm AS t1
 WHERE t1.p_day = '20180327'
 LIMIT 10
 ;
+
+
+
+
 
 
 
