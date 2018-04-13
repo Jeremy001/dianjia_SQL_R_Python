@@ -239,7 +239,7 @@ LIMIT 10
 
 -- 六丁目权重指标 ===================================
 
--- 1.2017年历史销售数据
+-- 1.2015-2017三年历史销售数据
 -- hive
 WITH 
 t1 AS
@@ -249,23 +249,20 @@ t1 AS
         ,t2.city_name
         ,t2.storage_group_name
         ,t2.storage_level1_area_name
-        ,t2.start_business_date
         ,t1.p_day
-        ,SUM(t1.total_sale_money_kpi) AS total_sale_money_kpi
+        ,SUM(t1.total_sale_money_kpi/100) AS total_sale_money_kpi
 FROM default.dm_storage_sale_dm AS t1
 LEFT JOIN default.dim_storage_info_dt AS t2
        ON t1.storage_id = t2.storage_id
 WHERE t1.brand_id = 10091
-  AND t1.p_day >= '20170101'
+  AND t1.p_day >= '20150101'
   AND t1.p_day <= '20171231'
-  AND t2.start_business_date < '2017-01-01'
 GROUP BY t1.storage_id
         ,t2.storage_name
         ,t2.province_name
         ,t2.city_name
         ,t2.storage_group_name
         ,t2.storage_level1_area_name
-        ,t2.start_business_date
         ,t1.p_day
 ),
 -- 日期
@@ -285,7 +282,6 @@ SELECT t1.storage_id
         ,t1.city_name
         ,t1.storage_group_name
         ,t1.storage_level1_area_name
-        ,t1.start_business_date
         ,t1.p_day
 		,t2.calendar_month
 		,t2.day_of_month
@@ -299,58 +295,23 @@ LEFT JOIN t2
 	   ON t1.p_day = t2.date_id
 ORDER BY t1.storage_id
 		,t1.p_day
-LIMIT 100
-;
--- 明细
-SELECT t1.*
-FROM t1
-ORDER BY t1.p_day
-		,t1.storage_id
 --LIMIT 100
 ;
--- 记录条数
-SELECT COUNT(1) 
-FROM t1
+
+
+-- 日期
+SELECT REGEXP_REPLACE(t1.date_id, '-', '') AS date_id
+		,t1.calendar_month
+		,t1.day_of_month
+		,t1.day_of_week
+		,t1.day_of_week_name
+		,t1.holiday_mark
+		,t1.holiday_name
+FROM default.dim_date AS t1
+WHERE t1.date_id >= '2016-01-01'
+  AND t1.date_id <= '2018-12-31'
+ORDER BY date_id
 ;
-
-
-
-
-
--- 阿里数加
-WITH
--- 销售金额明细
-t1 AS
-(SELECT t1.brand_id
-        ,t1.brand_name
-        ,t1.storage_id
-        ,t1.storage_name
-        ,t2.province_name
-        ,t2.city_name
-        ,t2.storage_group_name
-        ,t2.storage_level1_area_name
-        ,t2.start_business_date
-        ,t1.p_day
-        ,t1.total_sale_money_kpi
-        ,t1.total_sale_money_kpi_target
-FROM dm_storage_day_report AS t1
-LEFT JOIN dim_storage_info_dt AS t2
-       ON t1.storage_id = t2.storage_id
-WHERE t1.brand_id = 10091
-  AND t2.p_day = '20180411'
-  AND t1.p_day >= '20170101'
-  AND t1.p_day <= '20171231'
-  AND t2.start_business_date < 
-)
--- 记录条数
-SELECT COUNT(1) 
-FROM t1
-;
--- 明细
-SELECT t1.*
-FROM t1
-;
-
 
 
 
