@@ -239,7 +239,7 @@ LIMIT 10
 
 -- 六丁目权重指标 ===================================
 
--- 1.2015-2017三年历史销售数据
+-- 1.2015-2018三年多的历史销售数据
 -- hive
 WITH 
 t1 AS
@@ -256,7 +256,7 @@ LEFT JOIN default.dim_storage_info_dt AS t2
        ON t1.storage_id = t2.storage_id
 WHERE t1.brand_id = 10091
   AND t1.p_day >= '20150101'
-  AND t1.p_day <= '20171231'
+  AND t1.p_day <= '20180413'
 GROUP BY t1.storage_id
         ,t2.storage_name
         ,t2.province_name
